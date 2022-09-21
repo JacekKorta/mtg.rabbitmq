@@ -1,0 +1,191 @@
+{
+	"rabbit_version": "3.9.21",
+	"rabbitmq_version": "3.9.21",
+	"product_name": "RabbitMQ",
+	"product_version": "3.9.21",
+	"users": [
+		{
+			"name": "tagger",
+			"password_hash": "QH3rZoEQ1kx2Y5I0v917lBpB/AitgtUD5PbOP1q1YF2FHAFo",
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"tags": [
+				"user"
+			],
+			"limits": {}
+		},
+		{
+			"name": "guest",
+			"password_hash": "SQxlsIOFk2jqPa5cSGr7m0MNqeIfa8Fo3oLoJZnUNz1j5kdR",
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"tags": [
+				"administrator"
+			],
+			"limits": {}
+		},
+		{
+			"name": "goapp",
+			"password_hash": "2ZcKdCWt/rftmvU7d62JwN59jwG+E2ZuDw9AgE8qhnle/Jks",
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"tags": [
+				"user"
+			],
+			"limits": {}
+		},
+		{
+			"name": "deduplicator",
+			"password_hash": "8jk9PkAbJxtdvW/VLvHy9DmhJhkVgClyuopkEhMnin/PnnpM",
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"tags": [
+				"user"
+			],
+			"limits": {}
+		}
+	],
+	"vhosts": [
+		{
+			"name": "/"
+		},
+		{
+			"name": "mtg"
+		}
+	],
+	"permissions": [
+		{
+			"user": "guest",
+			"vhost": "/",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		},
+		{
+			"user": "guest",
+			"vhost": "mtg",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		}
+	],
+	"topic_permissions": [],
+	"parameters": [],
+	"global_parameters": [
+		{
+			"name": "internal_cluster_id",
+			"value": "rabbitmq-cluster-id-kx6Ebwf1kq8TfY40K4DKFQ"
+		}
+	],
+	"policies": [],
+	"queues": [
+		{
+			"name": "dlq.stack.questions.deduplicated",
+			"vhost": "mtg",
+			"durable": true,
+			"auto_delete": false,
+			"arguments": {
+				"x-queue-type": "classic"
+			}
+		},
+		{
+			"name": "stack.questions.deduplicated",
+			"vhost": "mtg",
+			"durable": true,
+			"auto_delete": false,
+			"arguments": {
+				"x-dead-letter-exchange": "dlq.stack.question",
+				"x-dead-letter-routing-key": "dlq.stack.question.deduplicated",
+				"x-queue-type": "classic"
+			}
+		},
+		{
+			"name": "dlq.stack.question.duplicated",
+			"vhost": "mtg",
+			"durable": true,
+			"auto_delete": false,
+			"arguments": {
+				"x-queue-type": "classic"
+			}
+		},
+		{
+			"name": "stack.questions.duplicated",
+			"vhost": "mtg",
+			"durable": true,
+			"auto_delete": false,
+			"arguments": {
+				"x-dead-letter-exchange": "dlq.stack.question",
+				"x-dead-letter-routing-key": "dlq.stack.question.duplicated",
+				"x-queue-type": "classic"
+			}
+		}
+	],
+	"exchanges": [
+		{
+			"name": "stack.questions.deduplicated",
+			"vhost": "mtg",
+			"type": "direct",
+			"durable": true,
+			"auto_delete": false,
+			"internal": false,
+			"arguments": {}
+		},
+		{
+			"name": "messages.ready",
+			"vhost": "mtg",
+			"type": "topic",
+			"durable": true,
+			"auto_delete": false,
+			"internal": false,
+			"arguments": {}
+		},
+		{
+			"name": "dlq.stack.questions",
+			"vhost": "mtg",
+			"type": "topic",
+			"durable": true,
+			"auto_delete": false,
+			"internal": false,
+			"arguments": {}
+		},
+		{
+			"name": "stack.questions.raw",
+			"vhost": "mtg",
+			"type": "direct",
+			"durable": true,
+			"auto_delete": false,
+			"internal": false,
+			"arguments": {}
+		}
+	],
+	"bindings": [
+		{
+			"source": "dlq.stack.questions",
+			"vhost": "mtg",
+			"destination": "dlq.stack.questions.deduplicated",
+			"destination_type": "queue",
+			"routing_key": "dlq.stack.question.deduplicated",
+			"arguments": {}
+		},
+		{
+			"source": "dlq.stack.questions",
+			"vhost": "mtg",
+			"destination": "dlq.stack.question.duplicated",
+			"destination_type": "queue",
+			"routing_key": "dlq.stack.question.duplicated",
+			"arguments": {}
+		},
+		{
+			"source": "stack.questions.deduplicated",
+			"vhost": "mtg",
+			"destination": "stack.questions.deduplicated",
+			"destination_type": "queue",
+			"routing_key": "stack.questions.deduplicated",
+			"arguments": {}
+		},
+		{
+			"source": "stack.questions.raw",
+			"vhost": "mtg",
+			"destination": "stack.questions.duplicated",
+			"destination_type": "queue",
+			"routing_key": "stack.questions.duplicated",
+			"arguments": {}
+		}
+	]
+}
