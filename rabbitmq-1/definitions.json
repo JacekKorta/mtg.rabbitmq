@@ -51,8 +51,22 @@
 	],
 	"permissions": [
 		{
+			"user": "goapp",
+			"vhost": "mtg",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		},
+		{
 			"user": "guest",
 			"vhost": "/",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		},
+		{
+			"user": "deduplicator",
+			"vhost": "mtg",
 			"configure": ".*",
 			"write": ".*",
 			"read": ".*"
@@ -65,7 +79,22 @@
 			"read": ".*"
 		}
 	],
-	"topic_permissions": [],
+	"topic_permissions": [
+		{
+			"user": "deduplicator",
+			"vhost": "mtg",
+			"exchange": "",
+			"write": ".*",
+			"read": ".*"
+		},
+		{
+			"user": "goapp",
+			"vhost": "mtg",
+			"exchange": "",
+			"write": ".*",
+			"read": ".*"
+		}
+	],
 	"parameters": [],
 	"global_parameters": [
 		{
