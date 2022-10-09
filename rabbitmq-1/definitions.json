@@ -65,6 +65,13 @@
 			"read": ".*"
 		},
 		{
+			"user": "tagger",
+			"vhost": "mtg",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		},
+		{
 			"user": "deduplicator",
 			"vhost": "mtg",
 			"configure": ".*",
@@ -82,6 +89,13 @@
 	"topic_permissions": [
 		{
 			"user": "deduplicator",
+			"vhost": "mtg",
+			"exchange": "",
+			"write": ".*",
+			"read": ".*"
+		},
+		{
+			"user": "tagger",
 			"vhost": "mtg",
 			"exchange": "",
 			"write": ".*",
@@ -143,6 +157,15 @@
 				"x-dead-letter-routing-key": "dlq.stack.question.duplicated",
 				"x-queue-type": "classic"
 			}
+		},
+		{
+			"name": "messages.ready.discord",
+			"vhost": "mtg",
+			"durable": true,
+			"auto_delete": false,
+			"arguments": {
+				"x-queue-type": "classic"
+			}
 		}
 	],
 	"exchanges": [
@@ -198,6 +221,14 @@
 			"destination": "dlq.stack.question.duplicated",
 			"destination_type": "queue",
 			"routing_key": "dlq.stack.question.duplicated",
+			"arguments": {}
+		},
+		{
+			"source": "messages.ready",
+			"vhost": "mtg",
+			"destination": "messages.ready.discord",
+			"destination_type": "queue",
+			"routing_key": "messages.ready.*",
 			"arguments": {}
 		},
 		{
